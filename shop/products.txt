@@ -1,0 +1,4 @@
+Laptop,10,999.99,A high-performance laptop.
+Smartphone,20,599.99,A latest model smartphone.
+Tablet,30,199.99,A latest model tablet.
+TV,40,499.99,A high-resolution TV with qled display.

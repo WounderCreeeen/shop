@@ -1,0 +1,223 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Product {
+private:
+    string name;
+    int quantity;
+    double price;
+    string description;
+
+public:
+    Product(string n, int q, double p, string d) : name(n), quantity(q), price(p), description(d) {}
+
+    string getName() const { return name; }
+    int getQuantity() const { return quantity; }
+    double getPrice() const { return price; }
+    string getDescription() const { return description; }
+
+    void display() const {
+        cout << "Name: " << name << endl;
+		cout << "Description: " << description << endl;
+        cout << "Quantity: " << quantity << endl;
+        cout << "Price: $" << price << endl;
+        cout << "--------------------------";
+    }
+};
+
+class Showcase {
+private:
+    vector<Product> products;
+
+public:
+    void addProduct(const Product& product) {
+        products.push_back(product);
+    }
+
+    void display() const {
+        for (size_t i = 0; i < products.size(); ++i) {
+            cout << "Product " << i + 1 << ":" << endl;
+            products[i].display();
+            cout << endl;
+        }
+    }
+
+    int size() const {
+        return products.size();
+    }
+
+    const Product& getProduct(int index) const {
+        return products[index];
+    }
+};
+
+class ShoppingCart {
+private:
+    vector<pair<Product, int>> products;
+    double totalCost;
+
+public:
+    ShoppingCart() : totalCost(0) {}
+
+    void addProduct(const Product& product, int quantity) {
+        products.push_back(make_pair(product, quantity));
+        totalCost += quantity * product.getPrice();
+    }
+
+    void display() const {
+        for (size_t i = 0; i < products.size(); ++i) {
+            cout << "Product " << i + 1 << ":" << endl;
+            products[i].first.display();
+            cout << "Quantity: " << products[i].second << endl;
+            cout << endl;
+        }
+        cout << "Total Cost: $" << totalCost << endl;
+    }
+};
+
+int main() {
+    // Создание нескольких товаров
+    Product product1("Laptop", 10, 999.99, "A high-performance laptop.");
+    Product product2("Smartphone", 20, 599.99, "A latest model smartphone.");
+	Product product3("Tablet", 30, 199.99, "A latest model tablet.");
+	Product product4("TV", 40, 499.99, "A high-resolution TV with qled display.");
+
+    // Добавление товаров на витрину
+    Showcase showcase;
+    showcase.addProduct(product1);
+    showcase.addProduct(product2);
+	showcase.addProduct(product3);
+	showcase.addProduct(product4);
+
+    int choice;
+    ShoppingCart cart;
+    do {
+        // Вывод меню
+        cout << "Welcome to the Store!" << endl;
+        cout << "1. Display Products" << endl;
+        cout << "2. Add Product to Cart" << endl;
+        cout << "3. Display Cart" << endl;
+        cout << "4. Exit" << endl;
+        cout << "-----------------------" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            showcase.display();
+            break;
+        case 2:
+            int productIndex, quantity;
+            cout << "Enter the product number to add to cart: ";
+            cin >> productIndex;
+            cout << "Enter the quantity: ";
+            cin >> quantity;
+            if (productIndex > 0 && productIndex <= showcase.size()) {
+                cart.addProduct(showcase.getProduct(productIndex - 1), quantity);
+                cout << "Product added to cart!" << endl;
+                cout << "-----------------------" << endl;
+            }
+            else {
+                cout << "Invalid product number!" << endl;
+                cout << "----------------------" << endl;
+            }
+            break;
+        case 3:
+            cout << "Shopping Cart:" << endl;
+            cart.display();
+            break;
+        case 4:
+            cout << "Thank you for visiting the Store!" << endl;
+            break;
+        default:
+            cout << "Invalid choice! Please try again." << endl;
+        }
+    } while (choice!= 4);
+
+    return 0;
+}
+
+
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <istream>
+
+using namespace std;
+
+class Product {
+public:
+    string name;
+    int quantity;
+    double price;
+    string description;
+};
+
+class Showcase {
+public:
+    vector<Product> products;
+};
+
+class ShoppingCart {
+public:
+    vector<pair<Product, int>> products;
+    double totalCost;
+};
+
+int main() {
+    // Open file
+    ifstream inputFile("products.txt");
+
+    // Check if file is open
+    if (inputFile.is_open()) {
+        // Read lines from file
+        string line;
+        while (getline(inputFile, line)) {
+            // Split line by commas
+            vector<string> components;
+            istream_iterator<string> lineStream(line);
+            copy(istream_iterator<string>(lineStream), istream_iterator<string>(), back_inserter(components));
+
+            // Create product
+            Product product;
+            product.name = components[0];
+            product.quantity = stoi(components[1]);
+            product.price = stod(components[2]);
+            product.description = components[3];
+
+            // Add product to showcase
+            Showcase showcase;
+            showcase.products.push_back(product);
+        }
+
+        inputFile.close();
+    }
+    else {
+        cout << "Failed to open file." << endl;
+        return 1;
+    }
+
+    // Do something with the showcase
+
+    return 0;
+}
